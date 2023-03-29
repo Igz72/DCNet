@@ -1,0 +1,29 @@
+usuario(PK(login), senha, descricao_do_perfil, rua, numero, bairro, cidade, estado, pais, primeiro_nome, sobrenome, email, data_de_nascimento, genero)
+
+preferencias(PK(preferencias, FK_usuario(login)))
+
+canal(PK(id_canal))
+
+coletivo(PF(id_coletivo), Unique(nome, FK_usuario(proprietario)), FK_canal(id_canal))
+
+grupo(PK(FK_coletivo(id_coletivo)))
+
+lista(PK(FK_coletivo(id_coletivo)))
+
+excecao(PK(FK_grupo(grupo)), visibilidade_excecao)
+
+publicacao(PK(id_publicacao), Unique(data, hora, FK_usuario(login), FK_canal(id_canal)), texto, visibilidade)
+
+imagem(PK(id_imagem), Unique(nome_da_imagem, FK_publicacao(id_publicacao)), arquivo_de_imagem)
+
+video(PK(nome_do_video, FK_publicacao(id_publicacao)), arquivo_de_video)
+
+solicita_amizade(PK(id_solicita_amizade), Unique(FK_usuario(proprietario), FK_usuario(amigo)), status)
+
+amigo(PK(FK_solicita_amizade(id_solicita_amizade)))
+
+solicita_participacao(PF(FK_grupo(grupo), FK_usuario(login)), status)
+
+adiciona(PK(FK_lista(lista), FK_amigo(amizade)))
+
+marca(PK(FK_usuario(login), FK_imagem(id_imagem), FK_amigo(amizade)))
