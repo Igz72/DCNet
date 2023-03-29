@@ -1,0 +1,132 @@
+<%- include('partials/header'); -%>
+
+<main class="conteudo">
+
+  <%- include('partials/menu'); -%>
+
+  <section class="conteudo-feed">
+
+    <form class="procurar-amigos" action="/amigos">
+      <input class="input" type="text" name="pesquisar" placeholder="Amigos"   />
+      <input class="botao" type="submit" value="Procurar" />
+    </form>
+
+    <div class="amigos" id="amigos">
+    </div>
+
+    <div class="procurar-amigos" id="mais_amigos">
+      <input class="botao" onclick="carregar_mais(6)" type="submit" value="Carregar mais" />
+    </div>
+  
+    <div class="conteudo-feed-atualizacao"></div>
+  </section>
+</main>
+
+<%- include('partials/footer'); -%>
+
+<script>
+  const form = document.querySelector('form');
+
+  var pesquisar;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault(); // Impede o recarregamento da página
+  
+    pesquisar = form.pesquisar.value;
+    var quantidade = 2;
+
+    try {
+      const res = await fetch('/amigos', { 
+        method: 'POST', 
+        body: JSON.stringify({ pesquisar, quantidade }),
+        headers: {'Content-Type': 'application/json'}
+      });
+
+      const data = await res.json();
+
+      if (data.erro) {
+        console.log(data.erro)
+      } else {
+        var html = "";
+
+        console.log(data.amigos);
+
+        for (var i = 0; i < data.amigos.length; i++) {
+          html = html.concat(
+            "<div class='amigo'>",
+              "<p>",
+                data.amigos[i].primeiro_nome, " ", data.amigos[i].sobrenome,
+              "<p>",
+              "<button class='botao-amizade' onclick='solicitar(\"" + data.amigos[i].login + "\")'>Solicitar amizade</button>",
+            "</div>");
+        }
+
+        const elemento1 = document.getElementById("amigos");
+        elemento1.innerHTML = html;
+
+        quantidade += 2;
+        const elemento2 = document.getElementById("mais_amigos");
+        elemento2.innerHTML = "<input class='botao' onclick='carregar_mais(" + quantidade + ")' type='submit' value='Carregar mais' />";
+      }
+    }
+    catch (err) {
+      console.error(err);
+    }
+  });
+
+  async function solicitar(amigo) {
+    try {
+      const res = await fetch('/amigos', { 
+        method: 'POST', 
+        body: JSON.stringify({ amigo }),
+        headers: {'Content-Type': 'application/json'}
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function carregar_mais(quantidade) {
+    if (pesquisar) {
+      var res;
+
+      try {
+        res = await fetch('/amigos', { 
+          method: 'POST', 
+          body: JSON.stringify({ pesquisar, quantidade }),
+          headers: {'Content-Type': 'application/json'}
+        });
+      } catch (err) {
+        console.error(err);
+      }
+
+      const data = await res.json();
+
+      if (data.erro) {
+        console.log(data.erro)
+      } else {
+        var html = "";
+
+        console.log(data.amigos);
+
+        for (var i = 0; i < data.amigos.length; i++) {
+          html = html.concat(
+            "<div class='amigo'>",
+              "<p>",
+                data.amigos[i].primeiro_nome, " ", data.amigos[i].sobrenome,
+              "<p>",
+              "<button class='botao-amizade' onclick='solicitar(\"" + data.amigos[i].login + "\")'>Solicitar amizade</button>",
+            "</div>");
+        }
+
+        const elemento = document.getElementById("amigos");
+        elemento.innerHTML = html;
+
+        quantidade += 2;
+        const elemento2 = document.getElementById("mais_amigos");
+        elemento2.innerHTML = "<input class='botao' onclick='carregar_mais(" + quantidade + ")' type='submit' value='Carregar mais' />";
+      }
+
+    }
+  }
+</script>

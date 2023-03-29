@@ -1,0 +1,79 @@
+<%- include('partials/header'); -%>
+
+<main class="conteudo">
+
+  <%- include('partials/menu'); -%>
+
+  <form class="conteudo-perfil" action="/perfil">
+    <div class="conteudo-perfil-interno">
+      <label class="titulo-input" for="descricao">Descrição</label>
+      <textarea class="input-longo" name="descricao"></textarea>
+
+      <label class="titulo-input" for="preferencias">Preferências</label>
+      <textarea class="input-longo" name="preferencias"></textarea>
+
+      <h2 class="titulo-input">Endereço</h2>
+      <div class="perfil-endereço">
+        <label class="subtitulo-input" for="rua">Rua</label>
+        <input class="input-pequeno" type="text" name="rua" />
+        <label class="subtitulo-input" for="numero">Nº</label>
+        <input class="input-pequeno" type="text" name="numero" />
+        <label class="subtitulo-input" for="bairro">Bairro</label>
+        <input class="input-pequeno" type="text" name="bairro" />
+        <label class="subtitulo-input" for="cidade">Cidade</label>
+        <input class="input-pequeno" type="text" name="cidade" />
+        <label class="subtitulo-input" for="estado">Estado</label>
+        <input class="input-pequeno" type="text" name="estado" />
+        <label class="subtitulo-input" for="pais">País</label>
+        <input class="input-pequeno" type="text" name="pais" />
+      </div>
+    </div>
+
+    <input class="botao" type="submit" value="Salvar" />
+  </form>
+</main>
+
+<%- include('partials/footer'); -%>
+
+<script>
+  const form = document.querySelector('form');
+
+  form.descricao.value    = '<%= perfil.descricao_do_perfil %>';
+  form.rua.value          = '<%= perfil.rua                 %>';
+  form.numero.value       = '<%= perfil.numero              %>';
+  form.bairro.value       = '<%= perfil.bairro              %>';
+  form.cidade.value       = '<%= perfil.cidade              %>';
+  form.estado.value       = '<%= perfil.estado              %>';
+  form.pais.value         = '<%= perfil.pais                %>';
+  form.preferencias.value = '<%= preferencias               %>';
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault(); // Impede o recarregamento da página
+  
+    const descricao     = form.descricao.value;
+    const rua           = form.rua.value;
+    const numero        = form.numero.value;
+    const bairro        = form.bairro.value;
+    const cidade        = form.cidade.value;
+    const estado        = form.estado.value;
+    const pais          = form.pais.value;
+    const preferencias  = form.preferencias.value;
+
+    try {
+      const res = await fetch('/perfil', { 
+        method: 'POST', 
+        body: JSON.stringify({ descricao, preferencias, rua, numero, bairro, cidade, estado, pais }),
+        headers: {'Content-Type': 'application/json'}
+      });
+
+      const data = await res.json();
+
+      if (data.erro) {
+        console.log(data.erro)
+      }
+    }
+    catch (err) {
+      console.error(err);
+    }
+  });
+</script>

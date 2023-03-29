@@ -1,0 +1,54 @@
+<%- include('partials/header'); -%>
+
+<main class="login">
+
+  <form class="login" action="/cadastro">
+    <input class="input" type="text" name="login"       placeholder="Login" />
+    <input class="input" type="text" name="senha"       placeholder="Senha" />
+    <input class="input" type="text" name="nome"        placeholder="Primeiro nome" />
+    <input class="input" type="text" name="sobrenome"   placeholder="Sobrenome" />
+    <input class="input" type="text" name="email"       placeholder="E-mail" />
+    <input class="input" type="date" name="nascimento"  placeholder="Data de nascimento" />
+    <input class="input" type="text" name="genero"      placeholder="Gênero" />
+    <input class="botao" type="submit" value="Criar" />
+  </form>
+
+</main>
+
+<%- include('partials/footer'); -%>
+
+<script>
+  const form = document.querySelector('form');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault(); // Impede o recarregamento da página
+  
+    const login       = form.login.value;
+    const senha       = form.senha.value;
+    const nome        = form.nome.value;
+    const sobrenome   = form.sobrenome.value;
+    const email       = form.email.value;
+    const nascimento  = form.nascimento.value;
+    const genero      = form.genero.value;
+
+    try {
+      const res = await fetch('/cadastro', { 
+        method: 'POST', 
+        body: JSON.stringify({ login, senha, nome, sobrenome, email, nascimento, genero }),
+        headers: {'Content-Type': 'application/json'}
+      });
+
+      const data = await res.json();
+
+      if (data.login) {
+        location.assign('/login');
+      }
+      else {
+        console.log(data.erro)
+      }
+    }
+    catch (err) {
+      console.error(err);
+    }
+  });
+</script>
