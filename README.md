@@ -13,6 +13,9 @@
 - cookie-parser 1.4.6 - Middleware que permite capturar os cookies enviados por uma página web
 - jsonwebtoken 8.5.1 - Pacote para a manipulação de JSON Web Tokens
 
+## Front-end com React
+- Em desenvolvimento :warning:
+
 ## Execução
 
 - Entrar no diretório "dcnet"
